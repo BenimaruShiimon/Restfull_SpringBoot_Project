@@ -1,0 +1,71 @@
+openapi: 3.1.0
+info:
+  description: web API
+  title: web API
+  version: 1.0.0
+servers:
+- url: https://web
+paths:
+  /ui/users/add:
+    get:
+      operationId: showFormForAdd
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: GET ui/users/add
+      x-accepts:
+      - '*/*'
+    post:
+      operationId: addUser
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: POST ui/users/add
+      x-accepts:
+      - '*/*'
+  /ui/users:
+    get:
+      operationId: getAllUsers
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: GET ui/users
+      x-accepts:
+      - '*/*'
+  /ui/users/delete/id/{id}:
+    delete:
+      operationId: deleteUserForId
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: "DELETE ui/users/delete/id/{id}"
+      x-accepts:
+      - '*/*'
+components:
+  schemas: {}
+
