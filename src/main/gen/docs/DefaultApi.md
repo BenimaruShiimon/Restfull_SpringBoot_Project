@@ -1,6 +1,6 @@
 # DefaultApi
 
-All URIs are relative to *https://localhost:8087/api/ui/users*
+All URIs are relative to *https://localhost:8087/ui/users*
 
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
