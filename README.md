@@ -37,7 +37,7 @@ git clone https://github.com/BenimaruShiimon/Restfull_SpringBoot_Project.git
 *или запустите класс с методом main из IDE.*
 
 По умолчанию приложение запустится на порту 8087. API будет доступен по адресу:
-http://localhost:8087
+http://localhost:8087/ui/users
 
 **Использование API**
 Примеры запросов и документация API доступны в проекте (https://github.com/BenimaruShiimon/Restfull_SpringBoot_Project/tree/main/src/main/gen/docs).
