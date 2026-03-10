@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Controller
 @RequestMapping("/ui/users")
 @RequiredArgsConstructor
@@ -22,16 +23,14 @@ public class UserController {
 
     @GetMapping
     public String getAllUsers(Model model) {
-        List<UserDto> userDtos = userService.findAll()
-                .stream()
-                .map(it -> new UserDto(it.getId(), it.getName(), it.getEmail(), it.getBirthDate(), it.getPhone())).toList();
+        List<UserDto> userDtos = userService.findAllDto();
         model.addAttribute("users", userDtos);
         return "user";
     }
 
     @PostMapping("/add")
     public String addUser(@ModelAttribute UserDto userDto) {
-        userService.create(new UserDto(userDto.getId(), userDto.getName(), userDto.getEmail(), userDto.getBirthDate(), userDto.getPhone()));
+        userService.create(userDto);
         return "redirect:/ui/users";
     }
 

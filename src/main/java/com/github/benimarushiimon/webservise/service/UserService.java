@@ -3,6 +3,7 @@ package com.github.benimarushiimon.webservise.service;
 import com.github.benimarushiimon.webservise.model.User;
 import com.github.benimarushiimon.webservise.repository.UserRepository;
 import com.github.benimarushiimon.webservise.web.dto.UserDto;
+import com.github.benimarushiimon.webservise.web.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,53 +18,34 @@ import java.util.Optional;
 @Log4j2
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final ValidationService validationService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, ValidationService validationService) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.validationService = validationService;
     }
 
-
     public User create(UserDto userDto) {
-        if (userDto == null
-                || !StringUtils.hasText(userDto.getName())
-                || !StringUtils.hasText(userDto.getEmail())
-                || userDto.getBirthDate() == null
-                || userDto.getPhone() == null) {
-            throw new IllegalArgumentException("Обязательные поля не заполнены: имя, email, дата рождения, телефон.");
-        }
-        if (userRepository.existsUsersByEmailIgnoreCase(userDto.getEmail())) {
-            throw new IllegalArgumentException("Пользователь с таким email уже существует: " + userDto.getEmail()
-                    + ". Проверьте корректность вашего email.");
-        }
-        User userSave = userRepository.save(new User(userDto.getId(),userDto.getName(),
-                userDto.getEmail(),
-                userDto.getBirthDate(),
-                userDto.getPhone()));
+        validationService.validateCreateUser(userDto);
+        User userToSave = userMapper.toEntity(userDto);
+        User userSave = userRepository.save(userToSave);
         log.info("Пользователь создан! {}", userSave);
         return userSave;
     }
 
     public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            log.error("Пользователь с id: {} не найден", id);
-            throw new IllegalArgumentException("Пользователь с id " + id + " не найден");
-        }
+        validationService.validateDeleteUserById(id);
         userRepository.deleteById(id);
         log.info("Пользователь с id: {} успешно удален", id);
     }
 
     public void deleteForName(String name) {
-        if (!userRepository.existsByName(name)) {
-            log.error("Пользователь с именем: {} не найден", name);
-            throw new IllegalArgumentException("Пользователь с именем " + name + " не найден");
-        }
+        validationService.validateDeleteUserByName(name);
         userRepository.deleteByName(name);
         log.info("Пользователь с именем: {} удален", name);
-    }
-
-    public void update(User user) {
-        userRepository.save(user);
     }
 
     @Transactional
@@ -98,6 +80,10 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public List<UserDto> findAllDto() {
+        return userMapper.toDtoList(userRepository.findAll());
     }
 
     public Optional<User> findById(Long id) {
