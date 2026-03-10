@@ -42,11 +42,6 @@ public class UserService {
         log.info("Пользователь с id: {} успешно удален", id);
     }
 
-    public void deleteForName(String name) {
-        validationService.validateDeleteUserByName(name);
-        userRepository.deleteByName(name);
-        log.info("Пользователь с именем: {} удален", name);
-    }
 
     @Transactional
     public void update(Long id, String name, String email, LocalDate birthDate, Long phone) {
